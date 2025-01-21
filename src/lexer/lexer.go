@@ -18,7 +18,7 @@ type Token interface {
 }
 
 type NumToken struct {
-	val float64
+	Val float64
 }
 
 func (t NumToken) Kind() rune {
@@ -32,11 +32,11 @@ func (t NumToken) OpVal() string {
 }
 
 func (t NumToken) NumVal() float64 {
-	return t.val
+	return t.Val
 }
 
 type OpToken struct {
-	val string
+	Val string
 }
 
 func (t OpToken) Kind() rune {
@@ -44,7 +44,7 @@ func (t OpToken) Kind() rune {
 }
 
 func (t OpToken) OpVal() string {
-	return t.val
+	return t.Val
 }
 
 func (t OpToken) NumVal() float64 {
@@ -59,9 +59,9 @@ func createToken(tokenType rune, input string) (Token, error) {
 		if err != nil {
 			return nil, err
 		}
-		return NumToken{val: val}, nil
+		return NumToken{Val: val}, nil
 	} else if tokenType == Operator {
-		return OpToken{val: input}, nil
+		return OpToken{Val: input}, nil
 	} else {
 		return nil, fmt.Errorf("unknown token type: %c for input: %s", tokenType, input)
 	}
@@ -80,7 +80,7 @@ func isSomething(something []rune) func(rune) bool {
 
 var isDigit = isSomething([]rune{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'})
 var isWhitespace = isSomething([]rune{' ', '\t', '\n', '\r'})
-var isOp = isSomething([]rune{'+', '-'})
+var isOp = isSomething([]rune{'+', '-', '*', '/'})
 
 func Tokenize(input string) ([]Token, error) {
 	output := []Token{}

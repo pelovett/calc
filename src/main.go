@@ -34,4 +34,5 @@ func main() {
 	}
 
 	fmt.Printf("Parse Tree:\n%v\n", parser.OpTreeToString(nodeTree))
+	fmt.Printf("Result: %f\n", nodeTree.Resolve())
 }

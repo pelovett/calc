@@ -9,7 +9,11 @@ func equalTokenSlices(a, b []Token) bool {
 
 	for i, ta := range a {
 		tb := b[i]
-		if ta.Kind() != tb.Kind() || ta.Val() != tb.Val() {
+		if ta.Kind() != tb.Kind() {
+			return false
+		} else if ta.Kind() == Number && ta.NumVal() != tb.NumVal() {
+			return false
+		} else if ta.Kind() == Operator && ta.OpVal() != tb.OpVal() {
 			return false
 		}
 	}
@@ -18,7 +22,7 @@ func equalTokenSlices(a, b []Token) bool {
 
 func TestSingleChar(t *testing.T) {
 	input := "1"
-	want := []Token{NumToken{val: 1.}}
+	want := []Token{NumToken{Val: 1.}}
 	out, err := Tokenize(input)
 	if !equalTokenSlices(want, out) || err != nil {
 		t.Fatalf(`Tokenize("1") = %q, %v, wanted %#q, nil`, out, err, want)
@@ -27,7 +31,7 @@ func TestSingleChar(t *testing.T) {
 
 func TestTwoChar(t *testing.T) {
 	input := "11"
-	want := []Token{NumToken{val: 11.}}
+	want := []Token{NumToken{Val: 11.}}
 	out, err := Tokenize(input)
 	if !equalTokenSlices(want, out) || err != nil {
 		t.Fatalf(`Tokenize("11") = %q, %v, wanted %#q, nil`, out, err, want)
@@ -36,7 +40,7 @@ func TestTwoChar(t *testing.T) {
 
 func TestSpaceInNumber(t *testing.T) {
 	input := "1 1"
-	want := []Token{NumToken{val: 1.}, NumToken{val: 1.}}
+	want := []Token{NumToken{Val: 1.}, NumToken{Val: 1.}}
 	out, err := Tokenize(input)
 	if !equalTokenSlices(want, out) || err != nil {
 		t.Fatalf(`Tokenize("11") = %q, %v, wanted %#q, nil`, out, err, want)
@@ -45,8 +49,8 @@ func TestSpaceInNumber(t *testing.T) {
 
 func TestSimpleAddition(t *testing.T) {
 	input := "1 + 1"
-	want := []Token{NumToken{val: 1.},
-		OpToken{val: "+"}, NumToken{val: 1.}}
+	want := []Token{NumToken{Val: 1.},
+		OpToken{Val: "+"}, NumToken{Val: 1.}}
 	out, err := Tokenize(input)
 	if !equalTokenSlices(want, out) || err != nil {
 		t.Fatalf(`Tokenize("1 + 1") = %q, %v, wanted %#q, nil`, out, err, want)
@@ -55,8 +59,8 @@ func TestSimpleAddition(t *testing.T) {
 
 func TestSimpleSubtraction(t *testing.T) {
 	input := "1 - 1"
-	want := []Token{NumToken{val: 1.},
-		OpToken{val: "-"}, NumToken{val: 1.}}
+	want := []Token{NumToken{Val: 1.},
+		OpToken{Val: "-"}, NumToken{Val: 1.}}
 	out, err := Tokenize(input)
 	if !equalTokenSlices(want, out) || err != nil {
 		t.Fatalf(`Tokenize("1 - 1") = %q, %v, wanted %#q, nil`, out, err, want)
@@ -65,8 +69,8 @@ func TestSimpleSubtraction(t *testing.T) {
 
 func TestNoSpace(t *testing.T) {
 	input := "1+1"
-	want := []Token{NumToken{val: 1.},
-		OpToken{val: "+"}, NumToken{val: 1.}}
+	want := []Token{NumToken{Val: 1.},
+		OpToken{Val: "+"}, NumToken{Val: 1.}}
 	out, err := Tokenize(input)
 	if !equalTokenSlices(want, out) || err != nil {
 		t.Fatalf(`Tokenize("1+1") = %q, %v, wanted %#q, nil`, out, err, want)
